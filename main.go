@@ -1,6 +1,7 @@
 package main
 
 import (
+	"soul/app/polls"
 	"soul/app/users"
 	"soul/utils"
 
@@ -10,6 +11,7 @@ import (
 
 func Migrate() {
 	users.AutoMigrate()
+	polls.AutoMigrate()
 }
 
 func main() {
@@ -27,6 +29,7 @@ func main() {
 	v1 := r.Group("/api")
 	v1.Use(users.AuthMiddleware(true))
 	users.UsersRegister(v1)
+	polls.PollsRegister(v1)
 
 	r.Run("127.0.0.1:8000")
 }
