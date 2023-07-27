@@ -33,30 +33,32 @@ var MyAuth2Extractor = &request.MultiExtractor{
 }
 
 // A helper to write user_id and user_model to the context
-func UpdateContextUserModel(c *gin.Context, my_user_id uint) {
+func UpdateContextUserModel(c *gin.Context, user_id uint) {
 	var myUserModel User
-	if my_user_id != 0 {
+	if user_id != 0 {
 		db := utils.GetDB()
-		db.First(&myUserModel, my_user_id)
+		db.First(&myUserModel, user_id)
 	}
-	c.Set("my_user_id", my_user_id)
+	c.Set("user_id", user_id)
 	c.Set("my_user_model", myUserModel)
+}
+
+var no_token_route = []string{
+	"/api/login", "/api/register", "/api/ping",
 }
 
 func AuthMiddleware(auto401 bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// init context userid
 		UpdateContextUserModel(c, 0)
+		// access source list
 
 		// access control
-		if c.Request.URL.Path == "/api/login" {
-			c.Next()
-			return
-		}
-
-		if c.Request.URL.Path == "/api/register" {
-			c.Next()
-			return
+		for _, v := range no_token_route {
+			if c.Request.URL.Path == v {
+				c.Next()
+				return
+			}
 		}
 
 		token, err := request.ParseFromRequest(c.Request, MyAuth2Extractor, func(_ *jwt.Token) (interface{}, error) {
@@ -70,8 +72,8 @@ func AuthMiddleware(auto401 bool) gin.HandlerFunc {
 			return
 		}
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			my_user_id := uint(claims["id"].(float64))
-			UpdateContextUserModel(c, my_user_id)
+			user_id := uint(claims["id"].(float64))
+			UpdateContextUserModel(c, user_id)
 		}
 	}
 }

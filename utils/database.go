@@ -7,10 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Database struct {
-	*gorm.DB
-}
+// type Database struct {
+// 	*gorm.DB
+// }
 
+// register global DB
 var DB *gorm.DB
 
 func Init() *gorm.DB {
@@ -30,6 +31,7 @@ func Init() *gorm.DB {
 	return DB
 }
 
+// util: get global db
 func GetDB() *gorm.DB {
 	return DB
 }

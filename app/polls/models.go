@@ -46,3 +46,17 @@ func SaveOne(data any) error {
 	err := db.Save(data).Error
 	return err
 }
+
+func FindAllSurveyWithUser(userId uint) (Survey, error) {
+	db := utils.GetDB()
+	survey := Survey{}
+	err := db.Where("user_id = ?", userId).Find(&survey).Error
+	return survey, err
+}
+
+func FindAllQuestionWithSurvey(surveyId uint) (Question, error) {
+	db := utils.GetDB()
+	question := Question{}
+	err := db.Where("survey_id = ?", surveyId).Find(&question).Error
+	return question, err
+}

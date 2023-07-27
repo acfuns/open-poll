@@ -26,7 +26,7 @@ func (v *SurveyModelValidator) Bind(c *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	v.surveyModel.UserID = c.GetUint("my_user_id")
+	v.surveyModel.UserID = c.GetUint("user_id")
 	v.surveyModel.Title = v.Title
 	v.surveyModel.Description = v.Description
 	v.surveyModel.Anonymous = v.Anonymous
