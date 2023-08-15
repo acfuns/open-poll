@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -16,14 +16,14 @@ var DB *gorm.DB
 
 func Init() *gorm.DB {
 	// env var config
-	cfg, err := Cfg()
-	if err != nil {
-		panic(err)
-	}
+	// cfg, err := Cfg()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// config database
-	dsn := fmt.Sprintf("host=%s user=%s password=%d dbname=%s port=%d sslmode=disable TimeZone=Asia/Shanghai", cfg.HOST, cfg.USER, cfg.PASSWORD, cfg.DB_NAME, cfg.PORT)
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(sqlite.Open("db.sqlite3"), &gorm.Config{})
 	if err != nil {
 		fmt.Println("db err: (Init)", err)
 	}

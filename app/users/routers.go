@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"soul/api/test"
 	"soul/utils"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,8 +56,13 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusForbidden, utils.NewError("login", errors.New("not Registered username or invalid password")))
 		return
 	}
+
 	UpdateContextUserModel(c, userModel.ID)
+
+	token := utils.GenToken(userModel.ID)
+	c.SetCookie("auth_token", token, int(time.Hour)*24*30, "/", "localhost", false, true)
+
 	c.JSON(http.StatusOK, gin.H{
-		"token": utils.GenToken(userModel.ID),
+		"token": token,
 	})
 }
